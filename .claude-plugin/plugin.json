@@ -1,0 +1,45 @@
+{
+  "name": "trading-skills",
+  "description": "Market news skills (news analysis, event calendars, catalyst research), a deep-research skill that runs them together on one question, and an Alpaca MCP server locked to paper trading.",
+  "author": {
+    "name": "TraderMonty"
+  },
+  "homepage": "https://github.com/digaamberdhamija/stock-deep-research-plugin",
+  "repository": "https://github.com/digaamberdhamija/stock-deep-research-plugin",
+  "license": "MIT",
+  "keywords": [
+    "market-news",
+    "trading",
+    "investing",
+    "deep-research"
+  ],
+  "userConfig": {
+    "alpaca_paper_api_key": {
+      "type": "string",
+      "title": "Alpaca paper API key ID",
+      "description": "API key ID from your Alpaca paper trading dashboard (https://app.alpaca.markets/paper/dashboard/overview). Paper keys are separate from live keys.",
+      "sensitive": true,
+      "required": true
+    },
+    "alpaca_paper_secret_key": {
+      "type": "string",
+      "title": "Alpaca paper secret key",
+      "description": "Secret key paired with the paper API key ID above.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "mcpServers": {
+    "alpaca-paper": {
+      "command": "uvx",
+      "args": [
+        "alpaca-mcp-server==2.4.1"
+      ],
+      "env": {
+        "ALPACA_API_KEY": "${user_config.alpaca_paper_api_key}",
+        "ALPACA_SECRET_KEY": "${user_config.alpaca_paper_secret_key}",
+        "ALPACA_PAPER_TRADE": "true"
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "trading-skills",
+  "description": "Local marketplace for the claude-trading-skills repository.",
+  "owner": {
+    "name": "TraderMonty"
+  },
+  "plugins": [
+    {
+      "name": "trading-skills",
+      "source": "./",
+      "description": "Market news skills plus a deep-research skill that runs them together."
+    }
+  ]
+}

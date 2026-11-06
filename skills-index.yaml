@@ -1,0 +1,321 @@
+schema_version: 1
+categories:
+- market-regime
+- core-portfolio
+- swing-opportunity
+- trade-planning
+- trade-memory
+- strategy-research
+- advanced-satellite
+- meta
+skills:
+- id: earnings-calendar
+  display_name: Earnings Calendar
+  category: meta
+  status: production
+  verification:
+    instruction_contract: not_verified
+    unit_tests: not_verified
+    workflow_contract: not_applicable
+    end_to_end_replay: not_applicable
+    data_provenance: not_verified
+    financial_logic_review: not_verified
+    empirical_validation: not_applicable
+    security_review: not_verified
+  operational_role:
+    type: standalone
+    rationale: "Fetches an earnings calendar as an independent event-planning utility."
+  summary: This skill retrieves upcoming earnings announcements for US stocks using the Financial Modeling
+    Prep (FMP) API.
+  timeframe: event-driven
+  difficulty: beginner
+  integrations:
+  - id: fmp
+    type: market_data
+    requirement: required
+    note: Financial Modeling Prep API
+  inputs:
+  - date_range
+  - market_cap_filter
+  outputs:
+  - earnings_calendar_report
+  workflows: []
+- id: economic-calendar-fetcher
+  display_name: Economic Calendar Fetcher
+  category: meta
+  status: production
+  verification:
+    instruction_contract: not_verified
+    unit_tests: not_verified
+    workflow_contract: not_applicable
+    end_to_end_replay: not_applicable
+    data_provenance: not_verified
+    financial_logic_review: not_verified
+    empirical_validation: not_applicable
+    security_review: not_verified
+  operational_role:
+    type: standalone
+    rationale: "Fetches economic events as an independent planning utility."
+  summary: Fetch upcoming economic events and data releases using FMP API.
+  timeframe: event-driven
+  difficulty: beginner
+  integrations:
+  - id: fmp
+    type: market_data
+    requirement: required
+    note: Financial Modeling Prep API
+  inputs:
+  - date_range
+  outputs:
+  - economic_events_report
+  workflows: []
+- id: fxmacrodata-calendar
+  display_name: FXMacroData Calendar
+  category: meta
+  status: beta
+  operational_role:
+    type: standalone
+    rationale: "Fetches official macro calendar data directly for event-risk planning."
+  summary: Fetch official-source macro release-calendar events using FXMacroData for trade planning
+    and event-risk filters.
+  timeframe: event-driven
+  difficulty: beginner
+  integrations:
+  - id: fxmacrodata
+    type: market_data
+    requirement: optional
+    note: FXMacroData REST API; public USD calendar rows work without a key
+  inputs:
+  - currency
+  - market_tier_filter
+  outputs:
+  - macro_release_calendar
+  workflows: []
+- id: edge-hint-extractor
+  display_name: Edge Hint Extractor
+  category: strategy-research
+  status: production
+  verification:
+    instruction_contract: not_verified
+    unit_tests: not_verified
+    workflow_contract: not_applicable
+    end_to_end_replay: not_applicable
+    data_provenance: not_verified
+    financial_logic_review: not_verified
+    empirical_validation: not_verified
+    security_review: not_verified
+  operational_role:
+    type: standalone
+    rationale: "Runs on its own or through the plugin's deep-research skill; the multi-skill workflows it belonged to were removed."
+  summary: Extract edge hints from daily market observations and news reactions, with optional LLM ideation,
+    and output canonical hints.yaml for downstream concept synthesis and auto detection.
+  timeframe: research
+  difficulty: intermediate
+  integrations:
+  - id: local_calculation
+    type: calculation
+    requirement: not_required
+    note: Extracts hints from observations/news; pure calculation
+  inputs:
+  - market_summary_json
+  - anomalies_json
+  outputs:
+  - hints_yaml
+  workflows: []
+- id: market-environment-analysis
+  display_name: Market Environment Analysis
+  category: market-regime
+  status: production
+  verification:
+    instruction_contract: not_verified
+    unit_tests: not_verified
+    workflow_contract: not_applicable
+    end_to_end_replay: not_applicable
+    data_provenance: not_verified
+    financial_logic_review: not_verified
+    empirical_validation: not_verified
+    security_review: not_verified
+  operational_role:
+    type: standalone
+    rationale: "Runs on its own or through the plugin's deep-research skill; the multi-skill workflows it belonged to were removed."
+  summary: Comprehensive market environment analysis and reporting tool.
+  timeframe: daily
+  difficulty: intermediate
+  integrations:
+  - id: websearch
+    type: web
+    requirement: required
+    note: Global market data via WebSearch / WebFetch
+  - id: chart_image
+    type: image
+    requirement: optional
+    note: Optional chart image inputs for technical interpretation
+  inputs:
+  - global_market_data
+  - chart_image
+  outputs:
+  - market_environment_report
+  workflows: []
+- id: market-news-analyst
+  display_name: Market News Analyst
+  category: market-regime
+  status: production
+  knowledge_only: true
+  verification:
+    instruction_contract: not_verified
+    unit_tests: not_applicable
+    workflow_contract: not_applicable
+    end_to_end_replay: not_applicable
+    data_provenance: not_verified
+    financial_logic_review: not_verified
+    empirical_validation: not_verified
+    security_review: not_verified
+  operational_role:
+    type: standalone
+    rationale: "Runs on its own or through the plugin's deep-research skill; the multi-skill workflows it belonged to were removed."
+  summary: This skill should be used when analyzing recent market-moving news events and their impact
+    on equity markets and commodities.
+  timeframe: daily
+  difficulty: intermediate
+  integrations:
+  - id: websearch
+    type: web
+    requirement: required
+    note: Web search / fetch
+  inputs:
+  - news_search_query
+  - date_range
+  outputs:
+  - news_impact_report
+  workflows: []
+- id: news-reaction-failure-analyzer
+  display_name: News Reaction Failure Analyzer
+  category: market-regime
+  status: production
+  verification:
+    instruction_contract: not_verified
+    unit_tests: passed
+    workflow_contract: not_applicable
+    end_to_end_replay: not_applicable
+    data_provenance: not_verified
+    financial_logic_review: not_verified
+    empirical_validation: not_verified
+    security_review: not_verified
+  operational_role:
+    type: standalone
+    rationale: "Runs on its own or through the plugin's deep-research skill; the multi-skill workflows it belonged to were removed."
+  summary: Judges whether a market failed to react to news favorable to a crowded speculative
+    position, implementing step 2 of Jason Shapiro's contrarian methodology with a Monte-Carlo-verified
+    drift-significance verdict test.
+  timeframe: event-driven
+  difficulty: intermediate
+  integrations:
+  - id: fmp
+    type: market_data
+    requirement: required
+    note: Historical EOD price data; per-symbol coverage varies (ETF proxy fallback documented)
+  - id: websearch
+    type: web
+    requirement: required
+    note: Events curation (Claude searches news to build the events JSON; no FMP news endpoint exists
+      for futures)
+  inputs:
+  - cot_crowding_report
+  - curated_events_json
+  outputs:
+  - news_failure_verdict
+  workflows: []
+- id: scenario-analyzer
+  display_name: Scenario Analyzer
+  category: strategy-research
+  status: production
+  knowledge_only: true
+  verification:
+    instruction_contract: not_verified
+    unit_tests: not_applicable
+    workflow_contract: not_applicable
+    end_to_end_replay: not_applicable
+    data_provenance: not_verified
+    financial_logic_review: not_verified
+    empirical_validation: not_verified
+    security_review: not_verified
+  operational_role:
+    type: standalone
+    rationale: "Runs on its own or through the plugin's deep-research skill; the multi-skill workflows it belonged to were removed."
+  summary: Analyze 18-month scenarios from news headlines via scenario-analyst agent with strategy-reviewer
+    second opinion; outputs primary/secondary/tertiary impact analysis and stock picks.
+  timeframe: event-driven
+  difficulty: advanced
+  integrations:
+  - id: websearch
+    type: web
+    requirement: required
+    note: Headline / news search via WebSearch
+  inputs:
+  - news_headline
+  outputs:
+  - scenario_report
+  - stock_picks
+  - review_yaml
+  workflows: []
+- id: stockbee-episodic-pivot-analyzer
+  display_name: Stockbee Episodic Pivot Analyzer
+  category: advanced-satellite
+  status: beta
+  operational_role:
+    type: standalone
+    rationale: "Runs on its own or through the plugin's deep-research skill; the multi-skill workflows it belonged to were removed."
+  summary: Analyze Stockbee-style Day 1 Episodic Pivot candidates from earnings, guidance, M&A, FDA,
+    analyst, contract, product, short-squeeze, and story/theme catalysts using catalyst quality,
+    gap/range expansion, volume shock, neglect/revaluation context, liquidity, and EP-day-low risk.
+  timeframe: event-driven
+  difficulty: advanced
+  integrations:
+  - id: catalyst_events_json
+    type: local_file
+    requirement: required
+    note: User-provided or upstream-generated catalyst/event records; the skill does not discover news by itself
+  - id: fmp
+    type: market_data
+    requirement: optional
+    note: Optional OHLCV enrichment via Financial Modeling Prep
+  - id: local_calculation
+    type: calculation
+    requirement: not_required
+    note: Catalyst classification, EP scoring, handoff flags, and report generation
+  inputs:
+  - catalyst_events
+  - earnings_trade_candidates
+  - momentum_burst_candidates
+  - daily_ohlcv
+  outputs:
+  - episodic_pivot_candidates
+  - catalyst_quality_scores
+  - delayed_ep_watchlist
+  - pead_handoff_candidates
+  workflows: []
+- id: deep-research
+  display_name: Deep Research
+  category: market-regime
+  status: beta
+  operational_role:
+    type: standalone
+    rationale: "User entry point that runs the other news skills in parallel and merges their output into one report."
+  summary: Multi-angle news research on a stock, theme, macro event, or the market that runs the
+    other news skills in parallel and writes one sourced report with scenarios and trigger levels.
+  timeframe: event-driven
+  difficulty: intermediate
+  integrations:
+  - id: websearch
+    type: web
+    requirement: required
+    note: News collection and gap filling via WebSearch / WebFetch
+  - id: fmp
+    type: market_data
+    requirement: optional
+    note: Used through the calendar and reaction skills when FMP_API_KEY is set
+  inputs:
+  - research_question
+  outputs:
+  - deep_research_report
+  workflows: []
