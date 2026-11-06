@@ -221,3 +221,6 @@ __marimo__/
 
 # Plugin output
 reports/
+
+# Local eval run output (contains machine paths)
+evals/results/
